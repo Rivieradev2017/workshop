@@ -35,7 +35,9 @@ cat ~/.ssh/id_rsa.pub
 
 ### Dans votre terminal (ou console)
 
-- cloner ce projet: https://github.com/Rivieradev2017/calc sous un autre nom
+- cloner ce projet: https://github.com/Rivieradev2017/calc sous un autre nom: calculator
+
+c'est un projet ExpressJS tout simple qui permet de faire une addition
 
 ```shell
 git clone git@github.com:Rivieradev2017/calc.git calculator
@@ -51,21 +53,23 @@ git push -u origin master
 - aller vérifier côté GitHub que le projet a été publié correctement
 - en local, installer les dépendances: `npm install`
 - vérifier que les tests du projet fonctionnent: `npm test`
-- le lancer
+- le lancer: `npm start`
 - tester: http://localhost:8080 (ou 9090 si vous êtes avec l'image Docker)
 - tester: http://localhost:9090/add/2/40
+- arrêtez
 
+> 🤖 8 mins
 
 ## Exercice 2: Déployer le projet chez Clever-Cloud
 
 **Objectif**: Déployer le projet
 
 
-- Aller sur https://www.clever-cloud.com/
+- Aller sur [https://www.clever-cloud.com/](https://www.clever-cloud.com/)
 - Clicker sur le bouton **SIGN UP AND TRY** (celui avec le logo GitHub)
 - renseigner les informations
-- > 🚧 créer une Organisation (ou pas?)
 - à partir de maintenant vous pouvez créer des applications
+  - vous pouvez aussi créer des organisations et créer les apps dedans
 
 ### Ajouter une application
 
@@ -77,7 +81,7 @@ git push -u origin master
 - vous pouvez changer le nom de l'application et sa zone de déploiement si vous le souhaitez
 - cliquez sur **CREATE**
 - cliquez sur **I DON'T NEED ANY ADD-ON**
-- laissez les variables d'environnement 
+- laissez les variables d'environnement en l'état
 - cliquez sur **NEXT**
 - le déploiement commence
 - allez dans la rubrique **Domain names**
@@ -85,7 +89,12 @@ git push -u origin master
 
 ⚠️ Si vous allez dans la rubrique **Information**, vous pouvez noter que l'on peut choisir la branche du repository GitHub qui servira à déployer, par défaut `master`
 
-## Exercice 3: déploiement continu
+- Attendez ... vous pouvez allez voir dans le logs
+- vous pouvez tester que votre application fonctionne: http://bustercalculator.cleverapps.io/add/40/40
+
+> 🤖 10 mins
+
+## Exercice 3: Ajout d'un service et déploiement continu
 
 > je code, ça déploie ...
 
@@ -93,11 +102,17 @@ git push -u origin master
 
 ### Créer une feature branch
 
+Nous allons créer une branche à partir de la branche **master** de votre projet, où nous allons coder un nouveau service: nous allons ajouter la multiplication.
+
+Dans votre terminal:
+
 ```shell
 git checkout -b wip-multiply # par defaut, créée à partir de master
 # -b -> create new branch
 git branch # affiche la branche courante
 ```
+
+Vous pouvez donc maintenant travailler sur votre nouvelle branche sans impacter votre projet principal:
 
 ### Ajouter le service "multiply"
 
@@ -116,6 +131,8 @@ app.get('/multiply/:a/:b', (req, res) => {
   });
 });
 ```
+
+#### Publiez votre code
 
 Puis, faites:
 
@@ -143,7 +160,7 @@ Committez:
 git commit -m "🐼 a new service"
 ```
 
-Poussez chez GitHub:
+"Poussez" chez GitHub:
 
 ```shell
 git push origin wip-multiply
@@ -152,12 +169,12 @@ git push origin wip-multiply
 ### Créez une pull request
 
 - aller sur votre repository gitHub (si nécessaire faite un "refresh")
-- vous avez une nouvelle branche apparaît
+- vous avez une nouvelle branche qui apparaît
 - et on vous propose de créer une nouvelle "pull request"
-- cliquez sur **Compare & New pull request** 
+- cliquez sur **Compare & New pull request**
 - Décrivez (ou pas) ce que vous proposez
 - cliquez sur **Create pull request**
-- ⚠️ **Ne mergez pas**, il faut ajouter les tests
+- ⚠️ **Ne mergez pas tout de suite**, il faut ajouter les tests
 
 ### Ajouter des tests
 
@@ -173,28 +190,32 @@ describe("21 * 2 equals 42", () => {
 });
 ```
 
-Puis:
+Puis publiez votre code:
 
 ```shell
-git add . 
+git add .
 git commit -m "🦊 add test"
 git push origin wip-multiply
 ```
 
-- Retournez sur votre pull request dans votre repository GitHub
+- Retournez sur votre pull request dans votre repository GitHub: 👏 votre PR a évoluée, vous voyez l'ajout des tests
 - Et maintenant **mergez** (cliquez sur le bouton **Merge pull request**)
 
 Côté Clever-Cloud, si tout va bien, le merge sur **master** qui est donc la branche de production, est détecté et un re déploiement est détecté.
+
+Une fois le déploiement terminé vous pouvez tester votre nouveau service:
 
 Vous pouvez aller essayer votre service: http://bustercalculator.cleverapps.io/multiply/2/21
 
 ⚠️⚠️⚠️ Donc maintenant vous savez faire du **déploiement continu** 🕺
 
+> 🤖 11 mins
+
 ## Exercice 4: intégration continue
 
-**Objectif**: Demander à Jenkins de lancer mes tests
+**Objectif**: Demander à Jenkins de lancer mes tests (et si mes tests ne sont pas bons, empêcher de merger le code sur **master**)
 
-http://o9mbre4aqm-jenkins.services.clever-cloud.com:4013/
+Aller sur: [http://o9mbre4aqm-jenkins.services.clever-cloud.com:4013/](http://o9mbre4aqm-jenkins.services.clever-cloud.com:4013/)
 
 se connecter (avec le user/password) que je vous aurais donné
 (ex: `buster01/buster01`)
@@ -202,35 +223,38 @@ se connecter (avec le user/password) que je vous aurais donné
 ### Aller sur votre compte GitHub
 
 - sélectionnez **settings**: https://github.com/settings/profile
-- sélectionnez **Personal access tokens**
+- sélectionnez **Personal access tokens** (tout en bas à gauche)
 - cliquez sur **Generate new token**
   - donnez un nom à votre token
   - cochez **repo**
   - cliquez sur **Generate token**
-  - ⚠️ copiez votre token dans un coin ex: `74d2b2bbcda5e0717ad3a3f28c8116203c8e7369`
+  - 👋 ⚠️ copiez votre token dans un coin ex: `74d2b2bbcda5e0717ad3a3f28c8116203c8e7369`
 
 ### Installer l'intégration Jenkins sur votre repository GitHub
 
-### Paramétrage Jenkins - GitHub
+### Paramétrage Jenkins + GitHub
 
-- allez dans les settings de votre repository (https://github.com/busterbunny69/calculator/settings)
+**Côté GitHub**:
+
+- allez dans les settings de votre **repository** "calculator" (https://github.com/busterbunny69/calculator/settings)
 - sélectionnez **Intégrations & services**
   - déroulez la liste **Add service**
   - cherchez "jenkins"
   - sélectionnez **Jenkins (GitHub plugin)**
-  - donnez l'url du serveur suivie de `github-webhook/` 
+  - donnez l'url du serveur suivie de `github-webhook/`
     - ⚠️ le `/` à la fin est obligatoire
     - http://o9mbre4aqm-jenkins.services.clever-cloud.com:4013/github-webhook/
   - cliquez sur **Add service**
 
+**Côté Jenkins**:
 
 - Allez dans **Manage Jenkins** > Configure System
   - Add GitHub Server
   - Credentials
-    - Add: sélectionnez Jenkins, puis comme type de credential:
+    - Add: sélectionnez "Jenkins", puis comme type de credential:
       - `Secret text`
       - copiez votre token dans la rubrique `Secret`
-      - donnez un `ID` et une `Description`
+      - donnez un `ID` (votre handle) et une `Description`
       - cliquez sur **Add**
     - Sélectionnez la credential que vous avez créée
     - cliquez sur **Test connection** pour vérifier
@@ -249,7 +273,7 @@ se connecter (avec le user/password) que je vous aurais donné
 ### Créer un Job
 
 - cliquez sur **New Item** ou sur **new jobs**
-- donnez un nom à votre item: `busterbunny69` (donnez lui votre handle)
+- donnez un nom à votre item: `busterbunny69` (⚠️ donnez lui votre handle sans le @)
 - sélectionnez **GitHub Organization**
 - cliquez sur **OK**
 
@@ -260,12 +284,16 @@ se connecter (avec le user/password) que je vous aurais donné
     - sélectionnez ce que vous aviez créé précédement
     - **username**: votre handle GitHub
     - **password**: le token de toute à l'heure (`74d2b2bbcda5e0717ad3a3f28c8116203c8e7369`)
-    - donnez un `ID` et une `Description`
+    - donnez un `ID` et une `Description` (ex: votre handle + "-job")
     - cliquez sur **Add**  
-    - sélectionnez la credential que vous avez créée
+    - ⚠️ sélectionnez la credential que vous avez créée
 - cliquez sur **Save**
 
+> Jenkins va aller "parser" vos projets ... et normalement il ne va rien trouver
+
 ### Ajouter un fichier Jenkinsfile à votre projet
+
+Cela va permettre à Jenkins de détecter votre repository
 
 Dans votre terminal
 
@@ -274,7 +302,7 @@ git checkout master
 git pull # pour récupérer la dernière version
 ```
 
-Ajouter un fichier `Jenkinsfile` (sans extention) avec le contenu suivant:
+Ajouter un fichier `Jenkinsfile` (sans extension) avec le contenu suivant:
 
 ```groovy
 node {
@@ -291,10 +319,9 @@ node {
 }
 ```
 
-puis:
+puis le publier:
 
 ```shell
-
 git add .
 git commit -m "add Jenkinsfile"
 git push origin master
@@ -307,7 +334,7 @@ git push origin master
 - et si vous cliquez sur cette ligne
   - vous verrez une ligne avec la branche master
 
-### Retournons sur le projet GitHub
+### Retournons sur le projet GitHub: il faut protéger master
 
 - allez dans les settings du projet
   - https://github.com/busterbunny69/calculator/settings
@@ -319,9 +346,11 @@ git push origin master
       - cochez **Require branches to be up to date before merging**
       - cliquez sur **Save changes**
 
-## Exercice 5 - faire une pull request
+> 🤖 23 mins
 
-En fait nous allons modifier directement un test
+## Exercice 5 - faire une nouvelle pull request
+
+En fait nous allons modifier un des tests pour qu'il soit faux. Donc on créé une nouvelle branche
 
 ```shell
 git checkout -b wip-my-test
@@ -344,13 +373,21 @@ git commit -m "tests"
 git push origin wip-my-test
 ```
 
-Vous pouvez vérifier qu'il y a une nouvelle branche dans votre job Jenkins et que le build est en rouge
+Vous pouvez vérifier qu'il y a une nouvelle branche dans votre job Jenkins (faites un refresh si nécessaire) et que le build est en rouge
 
 Côté GitHub, vous pouvez créer la pull request, et vous allez voir que cela vous affiche que les vérifications sont en erreur
 
 Si vous modifiez votre code pour que le test soit juste et que vous repoussiez votre code, le statut de la pull request va repasser en vert
 
+```shell
+git add .
+git commit -m "tests again"
+git push origin wip-my-test
+```
+
 Si vous mergez, il y aura un re-déploiement
+
+> 🤖 7 mins
 
 ## Exercice 6 - Ajouter un bot à tout ça
 
@@ -359,11 +396,11 @@ Si vous mergez, il y aura un re-déploiement
 - déployer un bot sur Clever
 - le faire parler dans RocketChat (à chaque déploiement)
 
-J'ai un repository avec le code source d'un hubot: https://github.com/Rivieradev2017/bob
+J'ai un repository avec le code source d'un hubot: [https://github.com/Rivieradev2017/bob](https://github.com/Rivieradev2017/bob)
 
 Le plus simple est de le forker (on ne va pas faire de modification dessus)
 
--  aller sur https://github.com/Rivieradev2017/bob
+- allez sur https://github.com/Rivieradev2017/bob
 - cliquez sur **fork** (en haut à droite)
 
 ### Déploiement du bot
@@ -382,10 +419,10 @@ EXPRESS_PORT=8080
 LISTEN_ON_ALL_PUBLIC=true
 PORT=8080
 ROCKETCHAT_AUTH=password
-ROCKETCHAT_PASSWORD=bob
+ROCKETCHAT_PASSWORD=bob00
 ROCKETCHAT_ROOM=general
 ROCKETCHAT_URL=http://rocket.chat.cleverapps.io
-ROCKETCHAT_USER=bob
+ROCKETCHAT_USER=bob00
 ```
 
 - En remplaçant `ROCKETCHAT_PASSWORD=bob` par `ROCKETCHAT_PASSWORD=bob01` (si vous êtes **buster01**)
@@ -394,9 +431,9 @@ ROCKETCHAT_USER=bob
 
 ### Nom de domaine
 
-- donnez un nom de domaine à votre bot: par exemple http://bob01.cleverapps.io/
+- donnez un nom de domaine à votre bot: par exemple [http://bob01.cleverapps.io/](http://bob01.cleverapps.io/)
 
-Pendant que votre bot se déploie, dans la console d'administration, allez sélectionner **Organisation Manager**
+Pendant que votre bot se déploie, dans la console d'administration de Clever-Cloud, allez sélectionner **Organisation Manager**
 
 - puis **Notifications**
 - sélectionnez **WEBHOOKS**
@@ -410,10 +447,10 @@ Pendant que votre bot se déploie, dans la console d'administration, allez séle
 
 ### Connectez vous au Chat
 
-- allez sur http://rocket.chat.cleverapps.io
+- allez sur [http://rocket.chat.cleverapps.io](http://rocket.chat.cleverapps.io)
 - connectez vous en tant que buster01 / buster01 (ou buster02 / buster02, etc...)
 - vous allez voir que votre bot a dit "Hello 🌍" au démarrage
-- maintenant, re-démarrez votre application **calculator** et observez
+- maintenant, re-démarrez votre application **calculator** (dans Clever-Cloud) et observez
 
 
 Pour plus d'infos sur comment faire un bot: http://k33g.github.io/2017/04/24/DEPLOY-HUBOT-ON-CLEVER-CLOUD.html
